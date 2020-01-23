@@ -15,6 +15,7 @@ import java.util.List;
 import compressor.Compressable;
 import compressor.OzoneDeflater;
 import compressor.OzoneGZip;
+import compressor.OzoneSevenZip;
 
 public class Validator {
 	// 검증할 압축 알고리즘 정보
@@ -53,6 +54,7 @@ public class Validator {
 		// 압축기 및 검증 여부 리스트 작성
 		items.add(new Item("deflater", new OzoneDeflater(BUFFER_SIZE), true));
 		items.add(new Item("gzip", new OzoneGZip(BUFFER_SIZE), true));
+		items.add(new Item("lzma", new OzoneSevenZip(), true));
 		
 		// 압축기를 순회하면서 검증
 		for (int i = 0; i < items.size(); i++) {
