@@ -49,7 +49,12 @@ public class main {
 		for (int i = 0; i < sampleData.Texts.size(); i++) {
 			System.out.println("Sample data index: " + i);
 			
-			stat[i][StatColumn.TrialCount.ordinal()] = (long)Math.sqrt(maxDataSize / sampleData.Texts.get(i).length()) * TRIAL_FACTOR;
+			// ¼öÇàÈ½¼ö °è»ê
+			double basicCount = (double)maxDataSize / sampleData.Texts.get(i).length();
+			double scaledCount = Math.sqrt(basicCount);
+			double scaledFactor = Math.max(1.0d, Math.log(basicCount));
+			
+			stat[i][StatColumn.TrialCount.ordinal()] = (long)(scaledCount * scaledFactor * scaledFactor * TRIAL_FACTOR);
 			boolean equality = false;
 			
 			for (int j = 0; j < stat[i][StatColumn.TrialCount.ordinal()]; j++) {
@@ -108,7 +113,7 @@ public class main {
 		}
 		
 		// ½ºÅÈ Ãâ·Â
-		System.out.println("---------- Statistics ----------");
+		System.out.println("---------- " + compressor.toString() + " Statistics ----------");
 		System.out.println("Original Length, Compressed Size, Compression Ratio, Trial Count, Encoding Time, Compression Time, Decompression Time, Decoding Time");
 		for (int i = 0; i < sampleData.Texts.size(); i++) {
 			System.out.println(
