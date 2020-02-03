@@ -18,6 +18,7 @@ import compressor.OzoneGZip;
 import compressor.OzoneLZ4;
 import compressor.OzoneLZ4Frame;
 import compressor.OzoneSevenZip;
+import compressor.OzoneSnappy;
 
 public class Validator {
 	// 검증할 압축 알고리즘 정보
@@ -65,6 +66,7 @@ public class Validator {
 		items.add(new Item("lzma", "", new OzoneSevenZip(), false));
 		items.add(new Item("lz4", "jpountz", new OzoneLZ4(false), true));
 		items.add(new Item("lz4", "jpountz.frame", new OzoneLZ4Frame(), true));
+		items.add(new Item("snappy", "block", new OzoneSnappy(), true));
 		
 		// 압축기를 순회하면서 검증
 		for (int i = 0; i < items.size(); i++) {

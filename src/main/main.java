@@ -5,6 +5,7 @@ import compressor.OzoneDeflater;
 import compressor.OzoneGZip;
 import compressor.OzoneLZ4;
 import compressor.OzoneLZ4Frame;
+import compressor.OzoneSnappy;
 import sampledata.SampleData;
 
 import java.nio.charset.StandardCharsets;
@@ -42,7 +43,8 @@ public class main {
 		List<Compressable> compressors = Arrays.asList(
 			new OzoneDeflater(DEFLATE_BUFFER_SIZE),
 			new OzoneGZip(GZIP_BUFFER_SIZE),
-			new OzoneLZ4Frame()
+			new OzoneLZ4Frame(),
+			new OzoneSnappy()
 		);
 		
 		for (var compressor: compressors) {
