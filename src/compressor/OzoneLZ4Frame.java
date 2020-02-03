@@ -3,32 +3,23 @@ package compressor;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-import java.util.zip.InflaterOutputStream;
 
-import compressor.Compressable;;
+import net.jpountz.lz4.LZ4FrameInputStream;
+import net.jpountz.lz4.LZ4FrameOutputStream;
 
-public class OzoneGZip implements Compressable {
-
+public class OzoneLZ4Frame implements Compressable {
+	
 	static final int DEFAULT_BUFFER_SIZE = 1024;
 	int bufferSize = DEFAULT_BUFFER_SIZE;
 
-	/*
-	 * GZIP æ–√‡
-	 * @param bufferSize 
-	 */
-	public OzoneGZip(int bufferSize) {
-		this.bufferSize = 0 < bufferSize ? bufferSize : this.bufferSize;
-	}
-	
 	@Override
 	public byte[] compress(byte[] data) {
 		byte[] result = null;
 		try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-			try (GZIPOutputStream gs = new GZIPOutputStream(os, true)) {
-				gs.write(data, 0, data.length);
+			try (LZ4FrameOutputStream zs = new LZ4FrameOutputStream(os)) {
+				zs.write(data);
 			}
+			os.flush();
 			result = os.toByteArray();
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -41,10 +32,10 @@ public class OzoneGZip implements Compressable {
 		byte[] result = null;
 		try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
 			try (ByteArrayInputStream is = new ByteArrayInputStream(data)) {
-				try (GZIPInputStream gs = new GZIPInputStream(is)) {
+				try (LZ4FrameInputStream zs = new LZ4FrameInputStream(is)) {
 					byte[] buffer = new byte[this.bufferSize];
 					int readBytes = 0;
-					while (0 < (readBytes = gs.read(buffer))) {
+					while (0 < (readBytes = zs.read(buffer))) {
 						os.write(buffer, 0, readBytes);
 					}
 				}
@@ -56,4 +47,5 @@ public class OzoneGZip implements Compressable {
 		}
 		return result;
 	}
+
 }

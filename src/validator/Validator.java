@@ -15,19 +15,27 @@ import java.util.List;
 import compressor.Compressable;
 import compressor.OzoneDeflater;
 import compressor.OzoneGZip;
+import compressor.OzoneLZ4;
+import compressor.OzoneLZ4Frame;
 import compressor.OzoneSevenZip;
 
 public class Validator {
 	// 검증할 압축 알고리즘 정보
 	static class Item {
-		String name;				// 이름; ex) deflater
+		String algorithmName;		// 알고리즘 이름: ex) deflater 
+		String name;				// 라이브러리 이름
 		Compressable compressor;	// 압축기
 		boolean enabled;			// 사용 여부
 
-		public Item(String name, Compressable compressor, boolean enabled) {
+		public Item(String algorithmName, String name, Compressable compressor, boolean enabled) {
+			this.algorithmName = algorithmName;
 			this.name = name;
 			this.compressor = compressor;
 			this.enabled = enabled;
+		}
+		
+		public String getAlgorithmName() {
+			return this.algorithmName;
 		}
 		
 		public String getName() {
@@ -52,9 +60,11 @@ public class Validator {
 		String sampleText = "To succeed in Life, you need two things: Ignorance and Confidence - Mark Twain.";
 		
 		// 압축기 및 검증 여부 리스트 작성
-		items.add(new Item("deflater", new OzoneDeflater(BUFFER_SIZE), true));
-		items.add(new Item("gzip", new OzoneGZip(BUFFER_SIZE), true));
-		items.add(new Item("lzma", new OzoneSevenZip(), true));
+		items.add(new Item("deflater", "", new OzoneDeflater(BUFFER_SIZE), true));
+		items.add(new Item("gzip", "", new OzoneGZip(BUFFER_SIZE), true));
+		items.add(new Item("lzma", "", new OzoneSevenZip(), false));
+		items.add(new Item("lz4", "jpountz", new OzoneLZ4(false), true));
+		items.add(new Item("lz4", "jpountz.frame", new OzoneLZ4Frame(), true));
 		
 		// 압축기를 순회하면서 검증
 		for (int i = 0; i < items.size(); i++) {
@@ -99,7 +109,7 @@ public class Validator {
 			
 			// Base64 인코딩 데이터를 텍스트 파일로 저장
 			File dir = new File(System.getProperty("user.dir"));
-			String base64FileName = item.getName() + ".base64.java.txt";
+			String base64FileName = item.getAlgorithmName() + (item.getName() != null ? "." + item.getName() : "") + ".base64.java.txt";
 			File base64File = new File(dir + File.separator + base64FileName);
 			System.out.println("File Path: " + base64File);
 			System.out.println("Encoded Base64 Text: " + base64EncodedText);
