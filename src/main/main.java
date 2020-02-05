@@ -27,7 +27,7 @@ public class main {
 		MAX_VALUE
 	}
 	
-	static final long TRIAL_FACTOR = 1;
+	static final long TRIAL_FACTOR = 100;
 	static final long TIME_RESOLUTION = 1000000;	// nano second to milliseconds
 	static final int DEFLATE_BUFFER_SIZE = 8192;
 	static final int GZIP_BUFFER_SIZE = 8192;
@@ -67,7 +67,7 @@ public class main {
 				double scaledCount = Math.sqrt(basicCount);
 				double scaledFactor = Math.max(1.0d, Math.log(basicCount));
 				
-				stat[i][StatColumn.TrialCount.ordinal()] = (long)(scaledCount * scaledFactor * scaledFactor * TRIAL_FACTOR);
+				stat[i][StatColumn.TrialCount.ordinal()] = (long)(scaledCount * scaledFactor * TRIAL_FACTOR);
 				boolean equality = false;
 				
 				for (int j = 0; j < stat[i][StatColumn.TrialCount.ordinal()]; j++) {
